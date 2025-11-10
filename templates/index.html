@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <title>GNP Prototype</title>
+</head>
+
+<body>
+    <br>
+    <!-- Upload -->
+    <div id="upload-area">
+        <form id="uploadForm" action="/" method="post" enctype="multipart/form-data">
+            <input type="file" name="image" id="fileInput" accept="image/png, image/jpeg" required>
+            <button type="submit">Process</button>
+        </form>
+    </div>
+
+    <br><br>
+
+    <!-- Object Detection -->
+    <div>
+        <h2>OBJECT DETECTION</h2>
+        <hr>
+        <div class="od">
+            <!-- YOLOv10n -->
+            <div class="cont1">
+                <h4>YOLOv10n</h4>
+                <div class="image-holder">
+                    {% if yolo_filename %}
+                    <a href="{{ url_for('static', filename='images/' + yolo_filename) }}" target="_blank">
+                        <img src="{{ url_for('static', filename='images/' + yolo_filename) }}">
+                    </a>
+                    {% endif %}
+                </div>
+
+                <br>
+                <h5>NO. OF OBJECTS DETECTED:</h5>
+                <p>BUS: {{ counts_original['BUS'] if counts_original else 0 }}</p>
+                <p>CAR: {{ counts_original['CAR'] if counts_original else 0 }}</p>
+                <p>MOTOR: {{ counts_original['MOTOR'] if counts_original else 0 }}</p>
+                <p>TRUCK: {{ counts_original['TRUCK'] if counts_original else 0 }}</p>
+            </div>
+            
+
+            <!-- YOLOv10n w/ CLAHE-->
+            <div class="cont1">
+                <h4>YOLOv10n w/ CLAHE</h4>
+                <div class="image-holder">
+                    {% if clahe_filename %}
+                    <a href="{{ url_for('static', filename='images/' + clahe_filename) }}" target="_blank">
+                        <img src="{{ url_for('static', filename='images/' + clahe_filename) }}">
+                    </a>
+                    {% endif %}
+                </div>
+
+                <br>
+                <h5>NO. OF OBJECTS DETECTED:</h5>
+                <p>BUS: {{ counts_enhanced['BUS'] if counts_enhanced else 0 }}</p>
+                <p>CAR: {{ counts_enhanced['CAR'] if counts_enhanced else 0 }}</p>
+                <p>MOTOR: {{ counts_enhanced['MOTOR'] if counts_enhanced else 0 }}</p>
+                <p>TRUCK: {{ counts_enhanced['TRUCK'] if counts_enhanced else 0 }}</p>
+            </div>
+        </div>
+    </div>
+
+    <br><br>
+
+    <!-- Metrics -->
+    <h2>EVALUATION METRICS</h2>
+    <hr>
+    <div>
+        <table id="eval-table">
+            <thead>
+                <th>Image</th>
+                <th>Entropy</th>
+                <th>Contrast Improvement Index</th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Original</td>
+                    <td> {{ entropy_original if entropy_original else '-' }} </td>
+                    <td rowspan="2"> {{ cii if cii else '-' }}</td>
+                </tr>
+                <tr>
+                    <td>Enhanced</td>
+                    <td> {{ entropy_enhanced if entropy_enhanced else '-' }} </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <br>
+    </div>
+</body>
+</html>
