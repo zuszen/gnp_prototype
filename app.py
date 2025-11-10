@@ -10,6 +10,9 @@ app = Flask(__name__)
 IMAGE_FOLDER = 'static/images'
 MODEL_FOLDER = 'model'
 
+# Load YOLO models once globally
+yolo_model = YOLO(os.path.join(MODEL_FOLDER, 'yolov10n.pt'))
+yolo_clahe_model = YOLO(os.path.join(MODEL_FOLDER, 'best.pt'))
 
 # Helper Function
 def enhance(image):
@@ -93,13 +96,11 @@ def detect():
 
     # Apply YOLOv10n
     # Without enhancements
-    yolo_model = YOLO(os.path.join(MODEL_FOLDER, 'yolov10n.pt'))
     results_original = yolo_model.predict(save_path) 
     cv2.imwrite(os.path.join(IMAGE_FOLDER, f"result_original{ext}"), results_original[0].plot())
 
 
     # With enhancements
-    yolo_clahe_model = YOLO(os.path.join(MODEL_FOLDER, 'best.pt'))
     results_enhanced = yolo_clahe_model.predict(enhanced_path)
     cv2.imwrite(os.path.join(IMAGE_FOLDER, f"result_enhanced{ext}"), results_enhanced[0].plot())
 
